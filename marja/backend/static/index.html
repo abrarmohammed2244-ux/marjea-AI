@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>مرجع — أداة معرفة للمعرّفين بالإسلام</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0d1b1a;
+    --panel: #123a37;
+    --panel-light: #17514c;
+    --parchment: #f4ecd8;
+    --parchment-dim: #d8cdb0;
+    --brass: #b08d57;
+    --tier-green: #4a7c59;
+    --tier-yellow: #b08d57;
+    --tier-orange: #c17a3f;
+    --tier-red: #a8493f;
+    --border: rgba(244,236,216,0.14);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--ink);
+    color: var(--parchment);
+    font-family: 'Tajawal', sans-serif;
+    min-height: 100vh;
+    line-height: 1.7;
+  }
+  header {
+    padding: 2.2rem 1.5rem 1.6rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  header h1 {
+    font-family: 'Amiri', serif;
+    font-size: 2.1rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  header p {
+    color: var(--parchment-dim);
+    margin-top: 0.5rem;
+    font-size: 0.95rem;
+    max-width: 480px;
+    margin-inline: auto;
+  }
+  nav.tabs {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1.2rem 1rem 0;
+    flex-wrap: wrap;
+  }
+  nav.tabs button {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--parchment-dim);
+    padding: 0.6rem 1.3rem;
+    border-radius: 999px;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  nav.tabs button.active {
+    background: var(--brass);
+    color: var(--ink);
+    border-color: var(--brass);
+    font-weight: 700;
+  }
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+  .panel { display: none; }
+  .panel.active { display: block; }
+  .field {
+    display: flex;
+    gap: 0.6rem;
+    margin-bottom: 1.5rem;
+  }
+  input[type=text] {
+    flex: 1;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    color: var(--parchment);
+    padding: 0.85rem 1rem;
+    border-radius: 10px;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 1rem;
+  }
+  input::placeholder { color: var(--parchment-dim); opacity: 0.7; }
+  button.action {
+    background: var(--brass);
+    color: var(--ink);
+    border: none;
+    padding: 0.85rem 1.6rem;
+    border-radius: 10px;
+    font-family: 'Tajawal', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  button.action:hover { background: #c39d63; }
+  button.action:disabled { opacity: 0.5; cursor: wait; }
+
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.3rem 1.4rem;
+    margin-bottom: 1rem;
+  }
+  .card .quote {
+    font-family: 'Amiri', serif;
+    font-size: 1.2rem;
+    line-height: 2;
+    margin-bottom: 0.8rem;
+  }
+  .card .meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    font-size: 0.85rem;
+    color: var(--parchment-dim);
+  }
+  .badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 700;
+  }
+  .badge.green { background: rgba(74,124,89,0.25); color: #8fd6a3; }
+  .badge.yellow { background: rgba(176,141,87,0.25); color: #e3c78a; }
+  .badge.lightgreen { background: rgba(74,124,89,0.18); color: #a8e0b8; }
+  .badge.orange { background: rgba(193,122,63,0.25); color: #f0a86a; }
+  .badge.red { background: rgba(168,73,63,0.25); color: #f0938a; }
+
+  .empty-state {
+    text-align: center;
+    color: var(--parchment-dim);
+    padding: 2.5rem 1rem;
+    font-size: 0.95rem;
+  }
+  .status-line {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--parchment-dim);
+    margin-top: -0.5rem;
+    margin-bottom: 1.2rem;
+  }
+  .status-line.error { color: #f0938a; }
+
+  .synth-box {
+    background: linear-gradient(135deg, rgba(176,141,87,0.1), rgba(176,141,87,0.03));
+    border: 1px solid var(--brass);
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-bottom: 1.2rem;
+    font-size: 0.95rem;
+    white-space: pre-wrap;
+  }
+  .synth-box .synth-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--brass);
+    margin-bottom: 0.5rem;
+  }
+  /* حالة "غير متاح حالياً": رسالة مختصرة للمستخدم فقط، بلا تفاصيل تقنية */
+  .synth-box.synth-box-notice {
+    background: rgba(192,57,43,0.06);
+    border-color: #c0392b;
+  }
+  .synth-box.synth-box-notice .synth-label {
+    color: #c0392b;
+  }
+
+  .sources-searched-box {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.1rem 1.3rem;
+    margin-bottom: 1.2rem;
+  }
+  .sources-searched-box .ss-title {
+    font-size: 0.82rem;
+    color: var(--parchment-dim);
+    margin-bottom: 0.7rem;
+  }
+  .sources-searched-box ul { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; }
+  .sources-searched-box li {
+    display: flex; align-items: center; gap: 0.5rem; font-size: 0.88rem;
+  }
+  .sources-searched-box .tick { font-weight: 700; }
+  .sources-searched-box li.hit .tick { color: #8fd6a3; }
+  .sources-searched-box li.miss .tick { color: var(--parchment-dim); }
+  .sources-searched-box li.miss { color: var(--parchment-dim); }
+
+  .source-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.9rem 1.2rem;
+    margin-bottom: 0.6rem;
+  }
+  .source-row .source-name { font-size: 0.95rem; }
+  .switch {
+    position: relative;
+    width: 46px;
+    height: 26px;
+    flex-shrink: 0;
+  }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .switch .slider {
+    position: absolute; cursor: pointer; inset: 0;
+    background: rgba(244,236,216,0.2);
+    border-radius: 999px;
+    transition: 0.2s;
+  }
+  .switch .slider::before {
+    content: ""; position: absolute; height: 20px; width: 20px;
+    right: 3px; bottom: 3px; background: var(--parchment);
+    border-radius: 50%; transition: 0.2s;
+  }
+  .switch input:checked + .slider { background: var(--tier-green); }
+  .switch input:checked + .slider::before { transform: translateX(-20px); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>مرجع</h1>
+  <p>أداة معرفة للمعرّفين بالإسلام — بحث موثق في القرآن والحديث، بدلالة عربية تتجاوز المطابقة الحرفية</p>
+</header>
+
+<nav class="tabs">
+  <button class="tab-btn active" data-tab="search">البحث الموثوق</button>
+  <button class="tab-btn" data-tab="sources">لوحة المصادر</button>
+</nav>
+
+<main>
+
+  <!-- ===== البحث ===== -->
+  <section class="panel active" id="panel-search">
+    <div class="field">
+      <input type="text" id="search-input" placeholder="اكتب استفسارك... مثال: النية في العمل">
+      <button class="action" id="search-btn">ابحث</button>
+    </div>
+    <label style="display:flex; align-items:center; gap:0.5rem; font-size:0.85rem; color:var(--parchment-dim); margin-bottom:1rem; cursor:pointer;">
+      <input type="checkbox" id="synthesize-toggle" style="width:16px;height:16px;">
+      صِغ إجابة موجزة بالذكاء الاصطناعي (مقيّدة بالمصادر أدناه فقط)
+    </label>
+    <div id="search-status" class="status-line"></div>
+    <div id="synthesized-box"></div>
+    <div id="search-results"></div>
+  </section>
+
+  <!-- ===== لوحة المصادر (تفعيل/تعطيل) ===== -->
+  <section class="panel" id="panel-sources">
+    <p style="color:var(--parchment-dim); font-size:0.9rem; margin-bottom:1.2rem;">
+      حدّد أي مجموعات المصادر يبحث فيها النظام. تعطيل مصدر يستثنيه فوراً من كل عمليات البحث.
+    </p>
+    <div id="sources-status" class="status-line"></div>
+    <div id="sources-list"></div>
+  </section>
+
+</main>
+
+<script>
+// مسار نسبي (مو عنوان ثابت) — يشتغل محلياً وبعد النشر على أي استضافة بدون أي تعديل،
+// لأن الواجهة والـ API يصيران يُخدَمان من نفس الأصل (origin) دائماً.
+const API_BASE = "";
+
+// ---------- تبديل التبويبات ----------
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+    if (btn.dataset.tab === 'sources') loadSources();
+  });
+});
+
+function evidenceBadge(evidence) {
+  return `<span class="badge ${evidence.color}">${evidence.label}</span>`;
+}
+
+// ---------- وحدة البحث ----------
+const searchInput = document.getElementById('search-input');
+const searchBtn = document.getElementById('search-btn');
+const searchStatus = document.getElementById('search-status');
+const searchResults = document.getElementById('search-results');
+
+async function runSearch() {
+  const query = searchInput.value.trim();
+  if (!query) return;
+  const synthesize = document.getElementById('synthesize-toggle').checked;
+  searchBtn.disabled = true;
+  searchStatus.textContent = synthesize ? 'جارٍ البحث والصياغة...' : 'جارٍ البحث...';
+  searchStatus.classList.remove('error');
+  searchResults.innerHTML = '';
+  document.getElementById('synthesized-box').innerHTML = '';
+  try {
+    const res = await fetch(`${API_BASE}/api/search`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query, synthesize })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'حدث خطأ');
+    searchStatus.textContent = `${data.count} نتيجة`;
+    if (data.synthesized) {
+      const s = data.synthesized;
+      // حالة نجاح فقط تُظهر إجابة مُصاغة. أي حالة أخرى (غير مُفعّلة/مزدحمة/غير
+      // متاحة) تُظهر رسالة قصيرة مناسبة للمستخدم فقط — بلا تفاصيل تقنية وبلا
+      // ذكر اسم أي موديل، وبلا تكرار نص المصادر (معروضة أصلاً أسفل الصفحة).
+      if (s.mode === 'gemini_generated') {
+        document.getElementById('synthesized-box').innerHTML = `
+          <div class="synth-box">
+            <div class="synth-label">✅ إجابة موجزة بالذكاء الاصطناعي (مبنية حصراً على المصادر أدناه)</div>
+            ${s.answer}
+          </div>
+        `;
+      } else {
+        document.getElementById('synthesized-box').innerHTML = `
+          <div class="synth-box synth-box-notice">
+            <div class="synth-label">⚠️ غير متاح حالياً</div>
+            ${s.message || 'تعذّر توليد إجابة بالذكاء الاصطناعي حالياً. النتائج المسترجعة أدناه مباشرة لا تزال متاحة.'}
+          </div>
+        `;
+      }
+    }
+    // قائمة المصادر التي تم البحث فيها (تظهر دائماً، حتى بلا نتائج)
+    if (data.sources_searched) {
+      searchResults.innerHTML = `
+        <div class="sources-searched-box">
+          <div class="ss-title">المصادر التي تم البحث فيها:</div>
+          <ul>
+            ${data.sources_searched.map(s => `
+              <li class="${s.matched ? 'hit' : 'miss'}">
+                <span class="tick">${s.matched ? '✅' : '—'}</span>
+                <span>${s.name}${s.matched ? ' (تطابق)' : ''}</span>
+              </li>
+            `).join('')}
+          </ul>
+        </div>
+      `;
+    }
+    if (data.count === 0) {
+      searchResults.innerHTML += `<div class="empty-state">⚠️ لم نتمكن من العثور على مصدر مطابق ضمن المصادر المفعّلة حالياً. عدم العثور على المعلومة لا يعني أنها غير صحيحة — يُنصح بمراجعة مختص أو توسيع قاعدة المصادر.</div>`;
+    } else {
+      searchResults.innerHTML += data.results.map(r => `
+        <div class="card">
+          <div class="quote">${r.text}</div>
+          <div class="meta">
+            <span>${r.source_ref} · تطابق ${r.match_percent}%</span>
+            ${evidenceBadge(r.evidence)}
+          </div>
+        </div>
+      `).join('');
+    }
+  } catch (e) {
+    searchStatus.textContent = 'تعذّر الاتصال بالخادم. تأكد أن الـ backend يعمل (python3 app.py).';
+    searchStatus.classList.add('error');
+  } finally {
+    searchBtn.disabled = false;
+  }
+}
+searchBtn.addEventListener('click', runSearch);
+searchInput.addEventListener('keydown', e => { if (e.key === 'Enter') runSearch(); });
+
+// ---------- لوحة المصادر ----------
+async function loadSources() {
+  const status = document.getElementById('sources-status');
+  const list = document.getElementById('sources-list');
+  status.textContent = 'جارٍ التحميل...';
+  status.classList.remove('error');
+  try {
+    const res = await fetch(`${API_BASE}/api/sources`);
+    const data = await res.json();
+    status.textContent = '';
+    list.innerHTML = data.sources.map(s => `
+      <div class="source-row">
+        <span class="source-name">${s.name}</span>
+        <label class="switch">
+          <input type="checkbox" data-source-id="${s.id}" ${s.enabled ? 'checked' : ''}>
+          <span class="slider"></span>
+        </label>
+      </div>
+    `).join('');
+    list.querySelectorAll('input[type=checkbox]').forEach(cb => {
+      cb.addEventListener('change', async () => {
+        cb.disabled = true;
+        try {
+          await fetch(`${API_BASE}/api/sources/toggle`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ source_id: cb.dataset.sourceId, enabled: cb.checked })
+          });
+        } catch (e) {
+          cb.checked = !cb.checked; // تراجع عند الفشل
+        } finally {
+          cb.disabled = false;
+        }
+      });
+    });
+  } catch (e) {
+    status.textContent = 'تعذّر الاتصال بالخادم. تأكد أن الـ backend يعمل (python3 app.py).';
+    status.classList.add('error');
+  }
+}
+</script>
+
+</body>
+</html>

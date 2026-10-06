@@ -1,0 +1,92 @@
+[
+  {
+    "id": "quran_main",
+    "name": "القرآن الكريم",
+    "enabled": true
+  },
+  {
+    "id": "bukhari",
+    "name": "صحيح البخاري",
+    "enabled": true
+  },
+  {
+    "id": "muslim",
+    "name": "صحيح مسلم",
+    "enabled": true
+  },
+  {
+    "id": "tirmidhi",
+    "name": "سنن الترمذي",
+    "enabled": true
+  },
+  {
+    "id": "nawawi40",
+    "name": "الأربعون النووية",
+    "enabled": true
+  },
+  {
+    "id": "qudsi40",
+    "name": "الأربعون القدسية",
+    "enabled": true
+  },
+  {
+    "id": "shahwaliullah40",
+    "name": "أربعون ولي الله الدهلوي",
+    "enabled": true
+  },
+  {
+    "id": "aladab_almufrad",
+    "name": "الأدب المفرد",
+    "enabled": true
+  },
+  {
+    "id": "bulugh_almaram",
+    "name": "بلوغ المرام",
+    "enabled": true
+  },
+  {
+    "id": "mishkat_almasabih",
+    "name": "مشكاة المصابيح",
+    "enabled": true
+  },
+  {
+    "id": "riyad_assalihin",
+    "name": "رياض الصالحين",
+    "enabled": true
+  },
+  {
+    "id": "shamail_muhammadiyah",
+    "name": "الشمائل المحمدية",
+    "enabled": true
+  },
+  {
+    "id": "abudawud",
+    "name": "سنن أبي داود",
+    "enabled": true
+  },
+  {
+    "id": "ahmed",
+    "name": "مسند الإمام أحمد بن حنبل",
+    "enabled": true
+  },
+  {
+    "id": "darimi",
+    "name": "سنن الدارمي",
+    "enabled": true
+  },
+  {
+    "id": "ibnmajah",
+    "name": "سنن ابن ماجه",
+    "enabled": true
+  },
+  {
+    "id": "malik",
+    "name": "موطأ مالك",
+    "enabled": true
+  },
+  {
+    "id": "nasai",
+    "name": "سنن النسائي",
+    "enabled": true
+  }
+]

@@ -1,0 +1,7 @@
+Flask>=3.0.0
+python-dotenv>=1.0.0
+
+# محرك البحث الحالي محلي ولا يحتاج مكتبات ML إضافية.
+# للترقية لاحقاً إلى embeddings حقيقية يمكن إضافة:
+# chromadb>=0.4.0
+# sentence-transformers>=2.2.0
